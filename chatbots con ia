@@ -1,0 +1,61 @@
+# Paso 1: Obtener acceso a la API
+Debes registrarte en OpenAI y obtener acceso a la API de GPT. Esto te proporcionará las claves de API necesarias para hacer solicitudes al modelo.
+
+# Paso 2: Elegir un entorno de desarrollo
+Puedes desarrollar tu chatbot en múltiples lenguajes de programación como Python, JavaScript, Java, etc. Python es comúnmente usado por su simplicidad y el fuerte soporte para tareas de NLP (Natural Language Processing).
+
+# Paso 3: Instalar las bibliotecas necesarias
+Por ejemplo, si eliges Python, necesitarás instalar la biblioteca openai. Esto se puede hacer mediante pip:
+
+# //pip install openai//
+
+# Paso 4: Implementar el código
+Aquí hay un ejemplo básico en Python de cómo podrías usar la API de OpenAI para hacer que tu chatbot envíe y reciba mensajes:
+
+#  //import openai//
+
+openai.api_key = 'tu-api-key-aqui'
+
+ obtener_respuesta(mensaje):
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "system", "content": "Tu chatbot aquí"},
+                  {"role": "user", "content": mensaje}],
+    )
+# //return response['choices'][0]['message']['content']//
+
+# Ejemplo de uso
+mensaje_usuario = "Hola, ¿qué tal?"
+respuesta = obtener_respuesta(mensaje_usuario)
+print("Chatbot:", respuesta)
+
+
+
+# ///7Usar Modelos Preentrenados de Hugging Face Transformers////
+
+
+# Paso 1: Instalar Transformers
+Instala la biblioteca Transformers y PyTorch o TensorFlow
+
+   # //pip install transformers torch//
+
+# Paso 2: Cargar un modelo
+Puedes cargar un modelo preentrenado que se adecue a tus necesidades (por ejemplo, gpt-2 o bert para tareas de lenguaje natural).
+Aquí un ejemplo de cómo cargar y utilizar un modelo de GPT-2:
+
+
+
+   //from transformers import GPT2Tokenizer, GPT2LMHeadModel
+
+tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+model = GPT2LMHeadModel.from_pretrained("gpt2")
+
+def obtener_respuesta(texto):
+    inputs = tokenizer.encode(texto + tokenizer.eos_token, return_tensors="pt")
+    outputs = model.generate(inputs, max_length=150)
+    respuesta = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return respuesta
+
+mensaje_usuario = "¿Cómo está el clima hoy?"
+respuesta = obtener_respuesta(mensaje_usuario)
+print("Chatbot:", respuesta)//.
