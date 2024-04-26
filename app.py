@@ -8,6 +8,7 @@ import openai
 load_dotenv()
 API_KEY = os.getenv('API_KEY')  # General API Key (if needed)
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')  # OpenAI specific API Key
+DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')  # Ejemplo de otra variable
 
 app = Flask(__name__)
 
@@ -62,5 +63,7 @@ def get_simple_api_response(message):
         return "Lo siento, no puedo procesar tu solicitud en este momento."
 
 if __name__ == '__main__':
+    # Mostrar las variables de entorno cuando inicia la aplicación
+    print(f"API Key: {API_KEY}")
+    print(f"Database Password: {DATABASE_PASSWORD}")
     app.run(debug=True)
-
