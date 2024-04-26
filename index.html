@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,6 +26,41 @@
                     </div>
         </div>
     </div>
+<<<<<<< HEAD
     <script src="index.js"></script>
+=======
+
+    <script>
+        function sendMessage() {
+            var userInput = document.getElementById("user-input").value;
+            document.getElementById("user-input").value = ''; // clear the input after sending
+            updateChat(userInput, true); // Show user message in chat
+
+            fetch('/webhook', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateChat(data.response, false); // Show bot response in chat
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        function updateChat(message, isUser) {
+            var chatBody = document.getElementById("chat-body");
+            var messageDiv = document.createElement("div");
+            messageDiv.textContent = message;
+            messageDiv.className = isUser ? 'user-message' : 'bot-message';
+            chatBody.appendChild(messageDiv);
+        }
+    </script>
+     <script src="index.js"></script>
+>>>>>>> c233e68e0f82a9029275ec1a982e7a4e6b591fb6
 </body>
 </html>
