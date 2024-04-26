@@ -1,0 +1,13 @@
+#1. pip install Flask requests
+
+
+#2. pip install python-dotenv
+
+#3. pip install openai flask
+
+
+#4. ejecutar= python app.py
+
+
+
+
