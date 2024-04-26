@@ -14,7 +14,7 @@ Aquí hay un ejemplo básico en Python de cómo podrías usar la API de OpenAI p
 
 #  //import openai//
 
-openai.api_key = 'tu-api-key-aqui'
+openai.api_key = ''
 
  obtener_respuesta(mensaje):
     response = openai.ChatCompletion.create(
