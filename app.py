@@ -1,5 +1,6 @@
 import os
-from flask import Flask, request, jsonify, render_template
+import logging
+from flask import Flask, request, jsonify, render_template, abort
 import requests
 from dotenv import load_dotenv
 import openai
@@ -8,9 +9,11 @@ import openai
 load_dotenv()
 API_KEY = os.getenv('API_KEY')  # General API Key (if needed)
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')  # OpenAI specific API Key
-DATABASE_PASSWORD = os.getenv('DATABASE_PASSWORD')  # Ejemplo de otra variable
 
 app = Flask(__name__)
+
+# Configurar logging
+logging.basicConfig(level=logging.INFO)
 
 @app.route('/')
 def home():
@@ -19,36 +22,43 @@ def home():
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    # Recibe el mensaje del usuario desde el cliente web
-    data = request.json
-    user_message = data.get('message')
-    # Procesa el mensaje utilizando la función process_message
+    if not request.json or 'message' not in request.json:
+        abort(400, 'Bad Request: No message provided.')
+
+    user_message = request.json['message']
     response_message = process_message(user_message)
-    # Devuelve la respuesta en formato JSON
     return jsonify({"response": response_message})
 
 def process_message(message):
-    # Decidir si se usa la API general o la de OpenAI según el contenido del mensaje
-    if "advanced" in message:
-        # Uso de OpenAI para respuestas más complejas
-        return get_openai_response(message)
-    else:
-        # Uso de una API externa simple para otras consultas
-        return get_simple_api_response(message)
+    if not message:
+        return "No se ha proporcionado un mensaje válido."
+
+    try:
+        if "advanced" in message:
+            return get_openai_response(message)
+        else:
+            return get_simple_api_response(message)
+    except Exception as e:
+        logging.error(f"Error processing message: {e}")
+        return "Error al procesar la solicitud."
 
 def get_openai_response(message):
-    openai.api_key = OPENAI_API_KEY
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": message}
-        ]
-    )
-    return response.choices[0].message['content']
+    try:
+        openai.api_key = OPENAI_API_KEY
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": message}
+            ]
+        )
+        return response.choices[0].message['content']
+    except Exception as e:
+        logging.error(f"Error in OpenAI response: {e}")
+        return "Error al obtener respuesta de OpenAI."
 
 def get_simple_api_response(message):
-    api_url = "https://api.openai.com/v1/completions"
+    api_url = "https://api.openai.com/v1/asistentes"
     headers = {
         "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json"
@@ -56,14 +66,13 @@ def get_simple_api_response(message):
     payload = {
         "query": message
     }
-    response = requests.post(api_url, headers=headers, json=payload)
-    if response.status_code == 200:
+    try:
+        response = requests.post(api_url, headers=headers, json=payload)
+        response.raise_for_status()  # Lanza un error para estados 4xx y 5xx
         return response.json()['data']
-    else:
-        return "Lo siento, no puedo procesar tu solicitud en este momento."
+    except requests.exceptions.RequestException as e:
+        logging.error(f"HTTP Error: {e}")
+        return "Error al comunicarse con la API externa."
 
 if __name__ == '__main__':
-    # Mostrar las variables de entorno cuando inicia la aplicación
-    print(f"API Key: {API_KEY}")
-    print(f"Database Password: {DATABASE_PASSWORD}")
-    app.run(debug=True)
+    app.run(debug=False)  # debug=False para producción
