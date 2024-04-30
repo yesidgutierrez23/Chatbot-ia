@@ -16,6 +16,16 @@ function sendMessage() {
     document.getElementById('user-input').value = '';
 }
 
+function showChat() {
+    var chatBot = document.querySelector('.chat-bot-ai');
+    chatBot.style.display = 'block';
+}
+
+function closeChat() {
+    var chatBot = document.querySelector('.chat-bot-ai');
+    chatBot.style.display = 'none';
+}
+
 function getBotResponse(userInput) {
     var botResponse = "";
 
