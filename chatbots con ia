@@ -5,7 +5,7 @@ Debes registrarte en OpenAI y obtener acceso a la API de GPT. Esto te proporcion
 Puedes desarrollar tu chatbot en múltiples lenguajes de programación como Python, JavaScript, Java, etc. Python es comúnmente usado por su simplicidad y el fuerte soporte para tareas de NLP (Natural Language Processing).
 
 # Paso 3: Instalar las bibliotecas necesarias
-Por ejemplo, si eliges Python, necesitarás instalar la biblioteca openai. Esto se puede hacer mediante pip:
+Por ejemplo, si eliges Python, necesitarás instalar la biblioteca openai. Esto se puede hacer mediante pip://
 
 # //pip install openai//
 
